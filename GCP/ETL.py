@@ -1,6 +1,6 @@
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions, GoogleCloudOptions
-import config.py as con
+import config as con
 
 
 def run_dataflow_pipeline(project_id, input_bucket, input_file, output_bucket, output_prefix):
