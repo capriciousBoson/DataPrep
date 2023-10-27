@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# other files
+*.csv
+*.xlsx
+*.ipynb
+*.json
+
 # Directories \
 DataPrepEnv/
 # C extensions
