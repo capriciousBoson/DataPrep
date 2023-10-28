@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from google.cloud import storage
 from apache_beam.options.pipeline_options import PipelineOptions, SetupOptions
+import csv
 
 
 SERVICE_ACCOUNT_EMAIL = "dataflow-gcs@dataprep-01-403222.iam.gserviceaccount.com"
@@ -22,13 +23,35 @@ class ReadCSV(beam.DoFn):
             df = pd.read_csv(pd.compat.StringIO(content))
             yield df
 
+def to_dataframe(row):
+    # Use a CSV reader to extract column names from the first row
+    if not hasattr(to_dataframe, 'header'):
+        to_dataframe.header = next(csv.reader([row]))
+    # Split the row into data
+    data = row.split(',')
+    # Create a DataFrame with extracted column names
+    df = pd.DataFrame([data], columns=to_dataframe.header)
+    yield df
+
+def parse_csv_line(line):
+    # Split the CSV line into a list of values
+    values = line.split(',')
+    
+    # Create a Pandas DataFrame from the list of values
+    df = pd.DataFrame([values])
+    #print("---------------------------")
+    #print(df.shape)
+    
+    return df
+
 # Define a function to process and save the data.
 class ProcessAndSave(beam.DoFn):
     def process(self, element):
+
         df = element
     
         # Remove NaN values
-        #df = df.dropna()
+        df = df.dropna()
         # Mean normalization
   
 
@@ -37,15 +60,15 @@ class ProcessAndSave(beam.DoFn):
         #df['Value1'] = imputer.fit_transform(df[['Value1']])
 
         # Step 2: Perform mean normalization
-        scaler = StandardScaler()
-        df['reads'] = scaler.fit_transform(df[['reads']])
+        #scaler = StandardScaler()
+        #df['reads'] = scaler.fit_transform(df[['reads']])
 
         # Step 3: Perform one-hot encoding
-        enc = OneHotEncoder(handle_unknown='ignore')
+        #enc = OneHotEncoder(handle_unknown='ignore')
         # passing bridge-types-cat column (label encoded values of bridge_types)
-        enc_df = pd.DataFrame(enc.fit_transform(df[['experiment_type']]).toarray())
+        #enc_df = pd.DataFrame(enc.fit_transform(df[['experiment_type']]).toarray())
         # merge with main df bridge_df on key values
-        df = df.join(enc_df)
+        #df = df.join(enc_df)
     
 
         #output_path ='gs://dataprep-bucket-001/Processed-Data/processed_dataset.csv'
@@ -73,17 +96,28 @@ def run():
         input_files = 'gs://dataprep-bucket-001/Raw-Data/subset_dataset.csv'
 
         # Read CSV files from the GCS bucket
-        csv_data = p | 'ReadCSV' >> beam.io.ReadFromText(input_files)
+        text_data = p | 'ReadCSV' >> beam.io.ReadFromText(input_files)
+        #csv_data = p | 'ReadCSV' >> beam.ParDo(ReadCSV())
+
+        #csv_data = csv_data | 'ToDataFrame' >> beam.Map(to_dataframe)
+
+        dataframe = text_data | beam.Map(parse_csv_line)
+        print("done  converting to dataframe ..............")
+        #print(dataframe.shape)
 
         # Set a default global windowing strategy for batch processing.
-        csv_data = csv_data | 'FixedGlobalWindow' >> beam.WindowInto(GlobalWindows())
+        dataframe = dataframe | 'FixedGlobalWindow' >> beam.WindowInto(GlobalWindows())
 
-
+        print("done  windowing..............")
         # Process and save the data
-        processed_data  = csv_data | 'ProcessAndSave' >> beam.ParDo(ProcessAndSave())
+        processed_data  = dataframe | 'ProcessAndSave' >> beam.ParDo(ProcessAndSave())
+
+        print("done _ processing the data.....................")
 
         # Save data
         processed_data | "Write Processed Data" >> beam.io.WriteToText('gs://dataprep-bucket-001/Processed-Data/processed_dataset.csv')
+
+        print("Saved data to bucket....................................")
 
 if __name__ == '__main__':
     run()
