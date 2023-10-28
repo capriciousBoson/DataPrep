@@ -6,7 +6,7 @@ from apache_beam.dataframe import expressions as exp
 
 
 PROJECT_ID='dataprep-01-403222'
-JOB_NAME='dataprep-job-ash-05'
+JOB_NAME='dataprep-job-ash-07'
 TEMP_DIR='gs://dataprep-bucket-001/temp'
 STAGING_LOCATION ='gs://dataprep-bucket-001/staging'
 REGION='us-south1'
@@ -29,14 +29,14 @@ column_name='reads'
 p = beam.Pipeline(DataflowRunner(), options=beam_options)
 
 df = p | read_csv(input_files, splittable=False)
-mean = df.reads.mean()
-std = df.reads.std()
+mean = df[column_name].mean()
+std = df[column_name].std()
 
-df['reads'] = (
-            (df['reads'] - mean) / std
+df[column_name] = (
+            (df[column_name] - mean) / std
         )
 
-df.to_csv('gs://dataprep-bucket-001/Processed-Data/processed_data_05.csv', num_shards=1)
+df.to_csv('gs://dataprep-bucket-001/Processed-Data/processed_data_07.csv')
 
 p.run().wait_until_finish()
 
