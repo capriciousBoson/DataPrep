@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
 ]
 
+
+#  Vue.js application is served from a different domain than your Django backend,
+#  you may need to configure Cross-Origin Resource Sharing (CORS) to allow the frontend to 
+#  make requests to the backend.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -47,7 +53,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+#Configure CORS to allow requests from your frontend domain:
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5050",
+    # Add other allowed origins if needed
+]
+
 
 ROOT_URLCONF = 'dataprepBackend.urls'
 
