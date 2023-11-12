@@ -2,7 +2,7 @@ const processFile = require("../middleware/upload");
 const { format } = require("util");
 const { Storage } = require("@google-cloud/storage");
 
-const storage = new Storage({ keyFilename: "google-cloud-key.json" });
+const storage = new Storage({ keyFilename: "keys/google-cloud-key.json" });
 const bucket = storage.bucket("data-prep-bucket");
 
 const upload = async (req, res) => {
@@ -12,8 +12,23 @@ const upload = async (req, res) => {
     if (!req.file) {
       return res.status(400).send({ message: "Please upload a file!" });
     }
+    const userID = req.body.userID;
+    const projectID = req.body.projectID;
+    const fileName = req.file.originalname;
+    // const fileInFolder = '${folderName}/${req.file.originalname}';
+    // const folderPath = `${userID}/${projectID}`;
+    // const fileInFolder = `${folderPath}/${fileName}`;
+    const fileInFolder = `${userID}/${projectID}/${fileName}`
+    console.log("User ID:", userID); // Log the userID value
+    console.log("Project ID:", projectID); 
 
-    const blob = bucket.file(req.file.originalname);
+    // try {
+    //   await bucket.file(folderPath).save(); // Trailing slash creates a folder
+    // } catch (err) {
+    //   // If the folder already exists or another error occurs, handle accordingly
+    //   return res.status(500).send({ message: "Could not create the folder." });
+    // }
+    const blob = bucket.file(fileInFolder);
     const blobStream = blob.createWriteStream({
       resumable: false,
     });
@@ -49,7 +64,7 @@ const upload = async (req, res) => {
 
     if (err.code == "LIMIT_FILE_SIZE") {
       return res.status(500).send({
-        message: "File size cannot be larger than 2MB!",
+        message: "File size cannot be larger than 2GB!",
       });
     }
 
