@@ -1,0 +1,34 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Cleaning Web App</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <h1>Data Cleaning Web App</h1>
+    <form id="cleaningForm" enctype="multipart/form-data">
+        <label for="csvFile">Upload CSV File:</label>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br>
+
+        <label for="dataPath">Data Path:</label>
+        <input type="text" id="dataPath" name="dataPath" readonly required>
+        <button type="button" onclick="browseFile()">Browse</button><br>
+
+        <div id="rulesContainer">
+            <!-- Dynamic rule elements will be added here -->
+        </div>
+
+        <button type="button" onclick="addRule()">Add Rule</button>
+        <button type="button" onclick="deleteRule()">Delete Last Rule</button><br>
+
+        <input type="submit" value="Generate JSON Rules">
+
+        <div id="jsonContainer"></div>
+    </form>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
