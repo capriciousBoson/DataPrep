@@ -52,8 +52,6 @@ function displayJSON(json) {
 document.getElementById('cleaningForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const dataPath = document.getElementById('dataPath').value;
-
     const rules = [];
 
     for (let i = 1; i <= ruleCount; i++) {
@@ -73,7 +71,30 @@ document.getElementById('cleaningForm').addEventListener('submit', function (eve
     const cleaningRulesJSON = JSON.stringify(rules, null, 2);
     console.log('Generated Cleaning Rules:', cleaningRulesJSON);
 
+    // Display the generated JSON on the web page
     displayJSON(rules);
 
-    // Add logic to send dataPath, csvFile, and cleaningRulesJSON to the backend (e.g., using fetch or AJAX)
+    // Add logic to send csvFile and cleaningRulesJSON to the backend (e.g., using fetch or AJAX)
+    fetch('/process', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            csvFile: document.getElementById('csvFile').files[0],
+            cleaningRules: rules,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+
+        // Check for errors from the server
+        if (data.status === 'error') {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 });

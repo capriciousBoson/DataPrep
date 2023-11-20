@@ -13,16 +13,15 @@
         <label for="csvFile">Upload CSV File:</label>
         <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br>
 
-        <label for="dataPath">Data Path:</label>
-        <input type="text" id="dataPath" name="dataPath" readonly required>
-        <button type="button" onclick="browseFile()">Browse</button><br>
-
         <div id="rulesContainer">
             <!-- Dynamic rule elements will be added here -->
         </div>
 
         <button type="button" onclick="addRule()">Add Rule</button>
         <button type="button" onclick="deleteRule()">Delete Last Rule</button><br>
+
+        <label for="cleaningRules">Generated JSON Rules:</label>
+        <textarea id="cleaningRules" name="cleaningRules" readonly></textarea>
 
         <input type="submit" value="Generate JSON Rules">
 
