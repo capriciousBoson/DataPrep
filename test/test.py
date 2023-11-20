@@ -2,17 +2,20 @@ import re
 from google.cloud import dataproc_v1 as dataproc
 from google.cloud import storage
 
-def submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name):
+def submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path):
     # Create the job client.
     job_client = dataproc.JobControllerClient(
         client_options={"api_endpoint": f"{region}-dataproc.googleapis.com:443"}
     )
 
-    # Create the job config. 'main_jar_file_uri' can also be a
+    # Create the job config. 'main_python_file_uri' can also be a
     # Google Cloud Storage URL.
     job = {
         "placement": {"cluster_name": cluster_name},
-        "pyspark_job": {"main_python_file_uri": job_file_path},
+        "pyspark_job": {
+            "main_python_file_uri": job_file_path,
+            "args": ["--input", input_gcs_path]  # Pass the GCS path as an argument to the PySpark script
+        },
     }
 
     operation = job_client.submit_job_as_operation(
@@ -39,4 +42,5 @@ if __name__ == "__main__":
     job_file_path = 'gs://dataproc-examples/pyspark/hello-world/hello-world.py'
     output_bucket = "your_output_bucket_name"
     output_blob_name = "your_output_blob_name"
-    submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name)
+    input_gcs_path = "gs://your_input_bucket_name/your_input_blob_name.csv"
+    submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path)
