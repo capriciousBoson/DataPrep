@@ -36,11 +36,11 @@ def submit_job(project_id, region, cluster_name, job_file_path, output_bucket, o
     print(f"Job finished successfully. Output uploaded to gs://{output_bucket}/{output_blob_name}")
 
 if __name__ == "__main__":
-    project_id = "planar-depth-403402"
-    region = "us-south1"
-    cluster_name = "test"
+    project_id = 'dataprep-01-403222'
+    region = 'us-central1'
+    cluster_name = 'dataprep-cluster-1'
     job_file_path = 'gs://dataproc-examples/pyspark/hello-world/hello-world.py'
-    output_bucket = "your_output_bucket_name"
-    output_blob_name = "your_output_blob_name"
-    input_gcs_path = "gs://your_input_bucket_name/your_input_blob_name.csv"
+    output_bucket = "gs://dataprep-bucket-001/Processed-Data"
+    output_blob_name = "processed_data_009.csv"
+    input_gcs_path = 'gs://dataprep-bucket-001/Raw-Data/subset_dataset.csv'
     submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path)
