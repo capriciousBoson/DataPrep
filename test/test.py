@@ -14,7 +14,7 @@ def submit_job(project_id, region, cluster_name, job_file_path, output_bucket, o
         "placement": {"cluster_name": cluster_name},
         "pyspark_job": {
             "main_python_file_uri": job_file_path,
-            "args": ["--input", input_gcs_path]  # Pass the GCS path as an argument to the PySpark script
+            "args": [input_gcs_path]  # Pass the GCS path as an argument to the PySpark script
         },
     }
 
@@ -39,8 +39,8 @@ if __name__ == "__main__":
     project_id = "planar-depth-403402"
     region = "us-south1"
     cluster_name = "test"
-    job_file_path = 'gs://dataproc-examples/pyspark/hello-world/hello-world.py'
-    output_bucket = "your_output_bucket_name"
-    output_blob_name = "your_output_blob_name"
-    input_gcs_path = "gs://your_input_bucket_name/your_input_blob_name.csv"
+    job_file_path = 'gs://inclasslab3/sample_job.py'
+    output_bucket = "final_5333"
+    output_blob_name = "output.csv"
+    input_gcs_path = "gs://landing_5333/inputtest.csv"
     submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path)
