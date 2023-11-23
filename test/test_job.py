@@ -15,14 +15,25 @@ if __name__ == "__main__":
     # output_path = sys.argv[2]
     data_path=input_path
     print(f"Input Path: {input_path}")
-    # print(f"Output Path: {output_path}"
+    # print(f"Output Path: {output_path}"  
+    # 
+    #  # Use the split method to split the string at the first underscore
+    #    Split the string at the last occurrence of '/'
+    
+    parts = input_path.rsplit('/', 1)
 
-    # Use the split method to split the string at the first underscore
-    userID= input_path.split('_')[0]
+    # Extract the part after the last '/'
+    if len(parts) > 1:
+        # Remove the file extension (assuming it's always ".csv")
+        userID = parts[1].split('.')[0]
+        print(userID)
+    else:
+        print("No '/' found in the input string pass corect USer ID format")
+  
     # Print the result
-    print(userID)
+    print(userID,"gs://main-5333/{userID}_configuration.json")
     # Set the GCS bucket path to your JSON files
-    tranformationConfig = f"gs://your-bucket-name/path/to/json/files/{userID}_configuration.json"
+    tranformationConfig = f"gs://main-5333/{userID}_configuration.json"
     # Read JSON data from GCS
     rule_data = spark.read.json(tranformationConfig)
     # Show the DataFrame

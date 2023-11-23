@@ -40,7 +40,7 @@ if __name__ == "__main__":
     project_id = "planar-depth-403402"
     region = "us-south1"
     cluster_name = "test"
-    job_file_path = 'gs://inclasslab3/sample_job.py'
+    job_file_path = 'gs://inclasslab3/test_job.py'
     output_bucket = "final_5333"
     output_blob_name = "output.csv"
     input_gcs_path = "gs://landing_5333/inputtest.csv"
