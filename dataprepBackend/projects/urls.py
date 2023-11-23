@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('jobsapi/', views.dataProcApi.as_view())
+    path('jobsapi/', views.DataprocJobView.as_view())
     
 ]
