@@ -14,6 +14,9 @@ if __name__ == "__main__":
     data_path=input_path
     print(f"Input Path: {input_path}")
     # print(f"Output Path: {output_path}")
+    test_var=sys.argv[2]
+    test_dict=sys.argv[3]
+    print(test_var,test_dict)
 
     # Read the CSV file into a DataFrame
     # df = spark.read.csv(input_path, header=True, inferSchema=True)
