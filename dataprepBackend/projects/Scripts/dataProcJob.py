@@ -43,6 +43,26 @@ def process_data(input_path, output_path, operations):
 
     spark.stop()
 
+def read_json_from_gcs(gcs_path):
+    # Create a GCS client
+    client = storage.Client()
+
+    # Parse the GCS path
+    bucket_name, blob_name = gcs_path.split('gs://')[1].split('/', 1)
+
+    # Get the bucket and blob
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    # Download the JSON content from GCS
+    json_content = blob.download_as_text()
+
+    # Convert the JSON content to a Python dictionary
+    json_dict = json.loads(json_content)
+
+    return json_dict
+
+
 if __name__ == "__main__":
     # Check if the correct number of command-line arguments are provided
     #if len(sys.argv) != 4:
@@ -53,11 +73,22 @@ if __name__ == "__main__":
     print("sys.argv...........................",sys.argv,sys.argv[2])
     input_path = sys.argv[2]
     print("input_path................................",input_path, type(input_path))
-    
+    path_parts = input_path.split('/')
+
+    # Extract the desired part
+    username = path_parts[-2]
+
+    dataset_name = path_parts[-1][:-4]
+
+    print("username = ", username, " dataset name = ", dataset_name)
     #operations_dict_str = sys.argv[3]
-    output_path = "gs://dataprep-bucket-001/Processed-Data/processed_data_123000011.csv"
+    output_path = f"gs://dataprep-bucket-001/Processed-Data/{username}/{dataset_name}_processed_data.csv"
+    print ("output path= ", output_path)
     #output_path = sys.argv[3]
-    operations = {"reads":"mean_normalization"}
+    #operations = {"reads":"mean_normalization"}
+    operations_json_path = f'gs://dataprep-bucket-001/Raw-Data/{username}/{dataset_name}.json'
+    print ("config_osn path= ", operations_json_path)
+    operations = read_json_from_gcs(operations_json_path)
 
     #operations = sys.argv[4]
     print("operations-----",operations,type(operations))
