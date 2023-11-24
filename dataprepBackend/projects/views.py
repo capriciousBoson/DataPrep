@@ -6,6 +6,7 @@ from .serializers import dfJobSerializer
 #from .Scripts import dfJobs
 
 import re
+import json
 from google.cloud import dataproc_v1 as dataproc
 from google.cloud import storage
 
@@ -22,21 +23,57 @@ class DataprocJobView(APIView):
         project_id = 'dataprep-01-403222'
         region = 'us-central1'
         cluster_name = 'dataprep-cluster-1'
-        job_file_path = 'gs://dataproc-examples/pyspark/hello-world/hello-world.py'
+
+        username = request.data.get('username')
+        dataset_name = request.data.get("dataset_name")
+        config_data = request.data.get('config')
+        json_object = json.dumps([config_data], indent=2)
+
+        print(username, dataset_name, config_data)
+
+        print("Json object created...",json_object)
+
+        client = storage.Client.from_service_account_json(r'C:\Users\avina\Desktop\CLASS_NOTES\5333-Cloud_Computing\Project\DataPrep\dataprepBackend\confidential\dataprep-01-403222-8a783d347b8c.json')
+        bucket_name = 'dataprep-bucket-001'
+        filename = f'/Raw-Data/{username}/{dataset_name}.json'
+
+        bucket = client.get_bucket(bucket_name)
+        blob = bucket.blob(filename)
+
+        try:
+            blob.upload_from_string(json_object)
+            print("Json config file uploaded to GCS...", json_object)
+        except Exception as e:
+            print(f"Error uploading JSON to GCS: {str(e)}")
+
+        #blob.upload_from_string(json_object)
+        
+        print("Json config file uploaded to gcs...",json_object)
+        c='gs://dataprep-bucket-001/Raw-Data/ash101/subset_dataset.csv'
+        d='gs://dataprep-bucket-001/Raw-Data/ash101/subset_dataset.csv'
+
+
+        job_file_path = 'gs://dataprep-jobs/Dataproc-Jobs/dataProcJob.py'
+        #job_file_path = r"C:\Users\avina\Desktop\CLASS_NOTES\5333-Cloud_Computing\Project\DataPrep\dataprepBackend\projects\Scripts\dataProcJob.py"
+        job_file_path2 = 'gs://dataproc-examples/pyspark/hello-world/hello-world.py'
         output_bucket = "gs://dataprep-bucket-001/Processed-Data"
-        output_blob_name = "processed_data_009.csv"
-        input_gcs_path = 'gs://dataprep-bucket-001/Raw-Data/subset_dataset.csv'
+        output_blob_name = "processed_data_999.csv"
+        #input_gcs_path = 'gs://dataprep-bucket-001/Raw-Data/ash101/subset_dataset.csv'
+        input_gcs_path = f'gs://dataprep-bucket-001/Raw-Data/{username}/{dataset_name}.csv'
+        output_path = f"gs://dataprep-bucket-001/Processed-Data/{username}/{dataset_name}_processed_12346.csv"
+
+        print(input_gcs_path,'\n',output_path)
 
         if not all([project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path]):
             return Response({'error': 'Missing required parameters in the request.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            self.submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path)
+            self.submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path, output_path)
             return Response({'message': 'Job submitted successfully.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f'Error submitting job: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def submit_job(self, project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path):
+    def submit_job(self, project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path, output_path):
         job_client = dataproc.JobControllerClient(
             client_options={"api_endpoint": f"{region}-dataproc.googleapis.com:443"}
         )
@@ -51,7 +88,7 @@ class DataprocJobView(APIView):
 
         operation = job_client.submit_job_as_operation(
             request={"project_id": project_id, "region": region, "job": job}
-            )
+        )
         response = operation.result()
 
         matches = re.match("gs://(.*?)/(.*)", response.driver_output_resource_uri)
@@ -61,7 +98,7 @@ class DataprocJobView(APIView):
 
         print(f"Job finished successfully. Output uploaded to gs://{output_bucket}/{output_blob_name}")
 
-
+        
 
 class dataflowJobsapi(APIView):
     def post(self, request, *args, **kwargs):
