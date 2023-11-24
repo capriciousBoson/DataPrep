@@ -50,16 +50,16 @@ if __name__ == "__main__":
     #    sys.exit(1)
 
     #input_path = 'gs://dataprep-bucket-001/Raw-Data/subset_dataset.csv'
-    print("sys.argv...........................",sys.argv,sys.argv[2],sys.argv[4],sys.argv[6])
+    print("sys.argv...........................",sys.argv,sys.argv[2])
     input_path = sys.argv[2]
     print("input_path................................",input_path, type(input_path))
     
     #operations_dict_str = sys.argv[3]
-    #output_path = "gs://dataprep-bucket-001/Processed-Data/processed_data_1230000.csv"
-    output_path = sys.argv[4]
-    #operations = {"reads":"mean_normalization"}
+    output_path = "gs://dataprep-bucket-001/Processed-Data/processed_data_123000011.csv"
+    #output_path = sys.argv[3]
+    operations = {"reads":"mean_normalization"}
 
-    operations = sys.argv[6]
+    #operations = sys.argv[4]
     print("operations-----",operations,type(operations))
 
     try:

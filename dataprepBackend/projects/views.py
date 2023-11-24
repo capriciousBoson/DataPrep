@@ -36,12 +36,12 @@ class DataprocJobView(APIView):
             return Response({'error': 'Missing required parameters in the request.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            self.submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path, output_csv_path, transformations)
+            self.submit_job(project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path)
             return Response({'message': 'Job submitted successfully.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f'Error submitting job: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def submit_job(self, project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path, output_csv_path, transformations):
+    def submit_job(self, project_id, region, cluster_name, job_file_path, output_bucket, output_blob_name, input_gcs_path):
         job_client = dataproc.JobControllerClient(
             client_options={"api_endpoint": f"{region}-dataproc.googleapis.com:443"}
         )
@@ -50,7 +50,7 @@ class DataprocJobView(APIView):
             "placement": {"cluster_name": cluster_name},
             "pyspark_job": {
                 "main_python_file_uri": job_file_path,
-                "args": ["--input", input_gcs_path, "--output_path",output_csv_path, "--transformations", transformations]
+                "args": ["--input", input_gcs_path]
             },
         }
 
