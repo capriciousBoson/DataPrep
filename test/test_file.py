@@ -13,8 +13,10 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
     client = storage.Client.from_service_account_json("./key.json")
     bucket = client.bucket(bucket_name)
 
-    # Get a list of all files in the folder
-    files = list(bucket.list_blobs(prefix=folder_path))
+    all_files = list(bucket.list_blobs(prefix=folder_path))
+
+    # Exclude files with "success" in their names
+    files = [file for file in all_files if "success" not in file.name.lower()]
 
     # Create a temporary directory to store the files
     temp_dir = "/tmp/folder_download"
@@ -22,7 +24,8 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
 
     # Download each file to the temporary directory
     for file in files:
-        file.download_to_filename(os.path.join(temp_dir, os.path.basename(file.name)))
+        if file.name!="_SUCCESS":
+            file.download_to_filename(os.path.join(temp_dir, os.path.basename(file.name)))
 
     # Create a ZIP archive of the folder's contents
     zip_file_path = os.path.join(temp_dir, f"{folder_path.strip('/').replace('/', '_')}.zip")
