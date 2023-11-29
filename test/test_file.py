@@ -6,9 +6,9 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
     service_account_file_path = "./key.json"
 
     # Read the content of the service account key file
-    with open(service_account_file_path, 'r') as file:
-        service_account_json = file.read()
-    print(service_account_json)
+    # with open(service_account_file_path, 'r') as file:
+    #     service_account_json = file.read()
+    # print(service_account_json)
 
     client = storage.Client.from_service_account_json("./key.json")
     bucket = client.bucket(bucket_name)
