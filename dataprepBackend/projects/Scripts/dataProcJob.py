@@ -39,7 +39,11 @@ def process_data(input_path, output_path, operations):
         # Add more operations as needed
 
     # Write the processed DataFrame to Google Cloud Storage
-    df.write.csv(output_path, header=True, mode="overwrite")
+    #df.write.csv(output_path, header=True, mode="overwrite")
+
+
+    df.coalesce(1).write.csv(output_path , header=True, mode="overwrite")
+
 
     spark.stop()
 
@@ -82,7 +86,7 @@ if __name__ == "__main__":
 
     print("username = ", username, " dataset name = ", dataset_name)
     #operations_dict_str = sys.argv[3]
-    output_path = f"gs://dataprep-bucket-001/Processed-Data/{username}/{dataset_name}_processed_data.csv"
+    output_path = f"gs://dataprep-bucket-001/Processed-Data/{username}/{dataset_name}_processed_data"
     print ("output path= ", output_path)
     #output_path = sys.argv[3]
     #operations = {"reads":"mean_normalization"}
