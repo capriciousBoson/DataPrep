@@ -3,23 +3,24 @@ from datetime import datetime, timedelta
 import zipfile
 import os
 def generate_signed_url(bucket_name, folder_path, expiration_time=24):
-    service_account_file_path = "./key.json"
+    service_account_file_path = r"C:\Users\avina\Desktop\CLASS_NOTES\5333-Cloud_Computing\Project\DataPrep\dataprepBackend\confidential\dataprep-01-403222-5bedab8357fa.json"
 
     # Read the content of the service account key file
     with open(service_account_file_path, 'r') as file:
         service_account_json = file.read()
     print(service_account_json)
 
-    client = storage.Client.from_service_account_json("./key.json")
+    client = storage.Client.from_service_account_json(service_account_file_path)
     bucket = client.bucket(bucket_name)
 
     all_files = list(bucket.list_blobs(prefix=folder_path))
+    print(all_files)
 
     # Exclude files with "success" in their names
     files = [file for file in all_files if "success" not in file.name.lower()]
 
     # Create a temporary directory to store the files
-    temp_dir = "/tmp/folder_download"
+    temp_dir = "/tmp/folder_download/"
     os.makedirs(temp_dir, exist_ok=True)
 
     # Download each file to the temporary directory
@@ -48,7 +49,7 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
     return signed_url
 
 # Example usage:
-bucket_name = "final_5333"
-folder_path = "staging"
+bucket_name = bucket_name = "dataprep-bucket-001"
+folder_path = "Processed-Data/ash101/subset_dataset_processed_data"
 signed_url = generate_signed_url(bucket_name, folder_path)
 print("Signed URL:", signed_url)
