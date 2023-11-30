@@ -49,7 +49,7 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
     return signed_url
 
 # Example usage:
-bucket_name = bucket_name = "dataprep-bucket-001"
+bucket_name = "dataprep-bucket-001"
 folder_path = "Processed-Data/ash101/subset_dataset_processed_data"
 signed_url = generate_signed_url(bucket_name, folder_path)
 print("Signed URL:", signed_url)
