@@ -5,6 +5,9 @@ from pyspark.sql.types import ShortType, FloatType
 from google.cloud import storage
 import json
 import sys
+import sys
+sys.path.append('../')
+from param import  PROJECT_ID, JOB_NAME, TEMP_DIR, STAGING_LOCATION, REGION,SERVICE_ACCOUNT_EMAIL, KEY_FILE, input_files,BUCKET_NAME
 
 def mean_normalization(df, column_name):
     """
@@ -86,11 +89,11 @@ if __name__ == "__main__":
 
     print("username = ", username, " dataset name = ", dataset_name)
     #operations_dict_str = sys.argv[3]
-    output_path = f"gs://dataprep-bucket-001/Processed-Data/{username}/{dataset_name}_processed_data"
+    output_path = f"gs://{BUCKET_NAME}/Processed-Data/{username}/{dataset_name}_processed_data"
     print ("output path= ", output_path)
     #output_path = sys.argv[3]
     #operations = {"reads":"mean_normalization"}
-    operations_json_path = f'gs://dataprep-bucket-001/Raw-Data/{username}/{dataset_name}.json'
+    operations_json_path = f'gs://{BUCKET_NAME}/Raw-Data/{username}/{dataset_name}.json'
     print ("config_osn path= ", operations_json_path)
     operations = read_json_from_gcs(operations_json_path)
 
