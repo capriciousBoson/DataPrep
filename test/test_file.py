@@ -6,9 +6,9 @@ def generate_signed_url(bucket_name, folder_path, expiration_time=24):
     service_account_file_path = r"C:\Users\avina\Desktop\CLASS_NOTES\5333-Cloud_Computing\Project\DataPrep\dataprepBackend\confidential\dataprep-01-403222-5bedab8357fa.json"
 
     # Read the content of the service account key file
-    with open(service_account_file_path, 'r') as file:
-        service_account_json = file.read()
-    print(service_account_json)
+    # with open(service_account_file_path, 'r') as file:
+    #     service_account_json = file.read()
+    # print(service_account_json)
 
     client = storage.Client.from_service_account_json(service_account_file_path)
     bucket = client.bucket(bucket_name)
