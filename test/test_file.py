@@ -21,7 +21,12 @@ def generate_signed_url(bucket_name, file_name, expiration_time=24):
     return blob.generate_signed_url(expiration=expiration_time,response_disposition="attachment",)
 
 # Example usage:
-bucket_name = "incalsslab3"
-file_name = "config.json"
-signed_url = generate_signed_url(bucket_name, file_name)
+# bucket_name = "incalsslab3"
+# file_name = "config.json"
+# signed_url = generate_signed_url(bucket_name, file_name)
+# print("Signed URL:", signed_url)
+bucket_name = "dataprep-bucket-001"
+folder_path = "Processed-Data/ash101/subset_dataset_processed_data"
+signed_url = generate_signed_url(bucket_name, folder_path)
+# >>>>>>> main
 print("Signed URL:", signed_url)
