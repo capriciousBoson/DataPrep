@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-j2sor$nz0di3aob(m56xpk%@s7l8f(6bg%8x+)nq69@)n$!)9=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -56,12 +56,13 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-#Configure CORS to allow requests from your frontend domain:
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5050",
-    # Add other allowed origins if needed
-]
+#Configure CORS to allow requests from your frontend domain:
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5050",
+#     # Add other allowed origins if needed
+# ]
 
 
 ROOT_URLCONF = 'dataprepBackend.urls'
