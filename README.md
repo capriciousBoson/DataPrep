@@ -1,18 +1,56 @@
-# DataPrep
+Developer Setup Instructions
+Welcome to the project! To get started, follow these steps to set up your development environment.
 
-#Funtions
-!!important note make sure the source  and staging buckets are different to make sure the function is not triggered for the staging files created
+1. Clone the Repository
+bash
+Copy code
+git clone https://github.com/your-username/your-repository.git
+cd your-repository
+2. Set Up keys.json
+Place your keys.json file in the dataprepBackend folder. This file contains sensitive information, so it should be kept secure and not shared publicly.
 
-option 1: go to folder functions  and create a function based on a trigger  and local code using the below command
-Use the below command to start the function
+Note: Ensure that this file is included in your .gitignore to avoid unintentionally committing it to the repository.
 
-main.py has the function code
-requiremts.txt has the dependencies 
+plaintext
+Copy code
+/your-repository
+  /dataprepBackend
+    - keys.json
+3. Configure config.py
+Copy the config_template.py file in the dataprepBackend folder to a new file named config.py.
 
-gcloud functions deploy start_dataflow_process     --runtime python38     --trigger-resource land_5333 --trigger-event google.storage.object.finalize
+bash
+Copy code
+cp dataprepBackend/config_template.py dataprepBackend/config.py
+Edit config.py and set any necessary configuration values for your development environment. This file should contain non-sensitive configuration settings and can be version-controlled.
 
-Option 2: 
-create a bucket and use process using a function option  and configure the function as python 3.8  and copy and paste the funtion/main.py, funtion/setup.py, and fution/requirements.py in the respective file in the inline editor 
+python
+Copy code
+# dataprepBackend/config.py
 
+class Config:
+    DEBUG = True
+    # Add other configuration variables as needed
+4. Update .gitignore
+Ensure that your keys.json file and any sensitive configuration files are ignored by Git. Modify or create a .gitignore file in the root of your repository if needed.
 
-the entry poit for the funtion is start_dataflow_process
+plaintext
+Copy code
+# .gitignore
+
+# Ignore keys and sensitive configuration files
+/dataprepBackend/keys.json
+/dataprepBackend/config.py
+5. create Docker Container 
+bash
+docker build -t container name  .
+6. Run the Application
+bash 
+docker run -it -p 8000:8000 container name 
+Open your browser and navigate to http://localhost:8000 to view the application.
+
+Additional Notes
+Keep your keys.json file secure and do not share it in public repositories.
+Always follow best practices for handling sensitive information.
+If you have any questions or issues, feel free to reach out to the project maintainers.
+Happy coding! 🚀

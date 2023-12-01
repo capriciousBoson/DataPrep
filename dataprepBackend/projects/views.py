@@ -13,7 +13,7 @@ class DataprocJobView(APIView):
     def post(self, request, *args, **kwargs):
 
         project_id =PROJECT_ID
-        region = 'us-central1'
+        region = REGION
         cluster_name = CLUSTER_NAME
 
         username = request.data.get('username')
@@ -62,6 +62,7 @@ class DataprocJobView(APIView):
             request={"project_id": project_id, "region": region, "job": job}
         )
         response = operation.result()
+        print("job creation \n",response)
 
         matches = re.match("gs://(.*?)/(.*)", response.driver_output_resource_uri)
         output_bytes = storage.Client().get_bucket(matches.group(1)).blob(f"{matches.group(2)}.000000000").download_as_bytes()

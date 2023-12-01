@@ -6,8 +6,8 @@ from google.cloud import storage
 import json
 import sys
 import sys
-sys.path.append('../')
-from param import  PROJECT_ID, JOB_NAME, TEMP_DIR, STAGING_LOCATION, REGION,SERVICE_ACCOUNT_EMAIL, KEY_FILE, input_files,BUCKET_NAME
+
+BUCKET_NAME='inclasslab3'
 
 def mean_normalization(df, column_name):
     """
