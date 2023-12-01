@@ -59,10 +59,10 @@ MIDDLEWARE = [
 
 #Configure CORS to allow requests from your frontend domain:
 CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5050",
-#     # Add other allowed origins if needed
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5050",
+    # Add other allowed origins if needed
+]
 
 
 ROOT_URLCONF = 'dataprepBackend.urls'
