@@ -8,7 +8,7 @@ let corsOptions = {
 app.use(cors());
 app.use(cors(corsOptions));
 
-app.use(cors({ origin: 'http://127.0.0.1:5500' }));
+app.use(cors({ origin: '*' }));
 
 const initRoutes = require("./src/routes");
 

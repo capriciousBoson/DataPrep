@@ -35,6 +35,6 @@ button {
 /* Center the buttons */
 #selectFileButton,
 #uploadButton {
-    display: block;
+    display: flexbox;
     margin: 0 auto;
 }
