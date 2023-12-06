@@ -15,7 +15,7 @@ const initRoutes = require("./src/routes");
 app.use(express.urlencoded({ extended: true }));
 initRoutes(app);
 
-const port = 8080;
+const port = 5000;
 app.listen(port, () => {
   console.log(`Running at localhost:${port}`);
 });

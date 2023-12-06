@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Cleaning Web App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Make JSON</h1>
+    <form id="cleaningForm" enctype="multipart/form-data">
+        <div id="rulesContainer"></div>
+        <button type="button" onclick="addRule()">Add Rule</button>
+        <button type="button" onclick="deleteRule()">Delete Last Rule</button><br>
+
+        <label for="cleaningRules">Generated JSON Rules:</label>
+        <textarea id="cleaningRules" name="cleaningRules" readonly></textarea>
+
+        <input type="submit" value="Generate JSON Rules">
+    </form>
+    <div id="jsonContainer"></div>
+    <button id="submitButton">Submit</button>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="jsonify.js"></script>
+</body>
+</html>
