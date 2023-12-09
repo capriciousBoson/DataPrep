@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from pyspark.sql import functions
 from pyspark.sql.types import ShortType, FloatType 
+from pyspark.ml.feature import StringIndexer, OneHotEncoder
 from google.cloud import storage
 import json
 import sys
@@ -22,6 +23,70 @@ def mean_normalization(df, column_name):
 
     return df_normalized
 
+def categorical_encoding(df, col_name):
+    print(f"starting categorical encoding for {col_name} ...................")
+    indexer = StringIndexer(inputCol=col_name, outputCol=f"{col_name}_index")
+    df = indexer.fit(df).transform(df)
+    print(f"Finished categorical encoding for {col_name} ...................")
+    return df
+
+def fillNaNumerical(df, column_name):
+    print(f"starting Fill NaN  for {col_name} ...................")
+    mean_value = df.agg({column_name: 'mean'}).collect()[0][0]
+    df = df.fillna(mean_value, subset=col)
+    print(f" Filled Nan for {col_name} ...................")
+
+def smartProcess(df):
+    # Separate columns into numerical and string columns
+    print("Automatic processing of the data  started.... ")
+    schema = df.schema
+    
+    numerical_columns = [field.name for field in schema.fields if 'StringType' not in str(field.dataType)]
+    string_columns = [field.name for field in schema.fields if 'StringType' in str(field.dataType)]
+
+    print(f" Numerical Columns detected : {numerical_columns} \n String Columns detected : {string_columns}")
+
+    # Handling Missing Values for Numerical Columns
+    for col_name in numerical_columns:
+        mean_value = df.agg({col_name: 'mean'}).collect()[0][0]
+        df = df.fillna(mean_value, subset=col_name)
+
+    # Handling Missing Values for String Columns
+    for col_name in string_columns:
+        df = df.fillna("UNKNOWN", subset=col_name)
+
+    # Calculate the average length of strings and cardinality in each string column
+    for col_name in string_columns:
+        avg_length = df.agg(avg(length(col(col_name))).alias('avg_length')).collect()[0]['avg_length']
+        cardinality = df.agg(countDistinct(col(col_name)).alias('cardinality')).collect()[0]['cardinality']
+        
+        print(f"Calculated Avg length for column - {col_name} = {avg_length}")
+        print(f"Calculated Cardinality for column - {col_name} = {cardinality}")
+
+        # Define thresholds based on your criteria
+        short_text_threshold = 50  # for example, strings with 50 characters or less are considered short
+        long_text_threshold = 100  # for example, strings with 100 characters or more are considered long
+        cardinality_threshold_percentage = 0.9  # for example, 90% of the total number of rows
+
+    # Decide whether to treat the string column as categorical based on average length and cardinality
+    if avg_length <= short_text_threshold and cardinality <= cardinality_threshold_percentage * df.count():
+        print(f"The strings in '{col_name}' are likely short and have low cardinality, possibly suitable for categorical encoding.")
+        # Perform categorical encoding using StringIndexer
+        df = categorical_encoding(df, col_name)
+
+    elif short_text_threshold < avg_length <= long_text_threshold:
+        print(f"The strings in '{col_name}' are of moderate length.")
+    else:
+        print(f"The strings in '{col_name}' are likely long, possibly requiring additional text processing.")
+
+    for col_name in numerical_columns:
+        df = fillNaNumerical(df, col_name)
+        df = mean_normalization(df, col_name)
+
+    return df
+
+
+
 def process_data(input_path, output_path, operations):
     """
     Read a CSV file from the specified input path, perform operations based on the provided dictionary,
@@ -34,6 +99,8 @@ def process_data(input_path, output_path, operations):
 
     # Perform specified operations
     for column_name, operation in operations.items():
+        if operation == "smart_process":
+            df == smartProcess(df)
         if operation == "mean_normalization":
             df = mean_normalization(df, column_name)
         # Add more operations as needed
