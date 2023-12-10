@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+   
+    environment {
+        DOCKER_HUB_REPO = "nxm2555/flask-hello-world"
+        CONTAINER_NAME = "flask-hello-world"
+     //   GCP_CREDENTIALS = credentials('3389edce-f1dc-4fef-b041-b24bcfeb4d2e')
+        GCS_BUCKET = 'inclasslab3'
+        GCS_FOLDER = "repo-backup-${env.BUILD_ID}"
+ 
+    }
+   
+    stages {
+        stage('Checkout') {
+            steps {
+ 
+                checkout([$class: 'GitSCM', branches: [[name: '*']], extensions: [], userRemoteConfigs: [[credentialsId: 'ghost',url: 'git@github.com:ghost9933/dataPrepImage.git']]])
+                 sh "ls -lat"
+ 
+            }
+        }
+        stage('build backend') {
+            steps {
+                echo 'building backend container'
+                sh "ls" 
+                sh "docker build -t backend ."
+                sh "docker run -p 8000:8000 backend &"
+            }
+        }
+        stage('Test Check Server') {
+            steps {
+                 script {
+                    def port = 8000
+                    def serverStatus = sh(script: "netstat -tulpn | grep :${port}", returnStatus: true)
+                    
+                    if (serverStatus == 0) {
+                        echo "Server is running on port ${port}."
+                    } else {
+                        error "Server is not running on port ${port}."
+                    }
+                 }
+            }
+        }
+        stage('build front end node') {
+            steps {
+                 echo 'building....'
+                sh "pwd"
+                sh "sudo rm -r /var/www/html/*"
+                sh "sudo cp -r /var/lib/jenkins/workspace/frontend/node-dataprep/* /var/www/html/"
+                
+                script {
+                    // Change to a specific directory
+                    dir('./node-dataprep') {
+                        // Now you're in the specified directory
+                        echo "Current directory: ${pwd()}"
+                        
+                        // Execute commands in the specified directory
+                        sh 'ls -la'
+                        sh 'echo "Hello from Jenkins"'
+                        sh "pwd"
+                        sh "ls"
+                        sh "cat server.js"
+                        sh "sudo npm install" 
+                        sh "node server.js &" 
+                    }
+                 }
+            }
+        }   
+    }
+ }
