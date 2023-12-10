@@ -1,22 +1,15 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Cleaning Web App</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Data Cleaning Web App</h1>
+    <h1>Make JSON</h1>
     <form id="cleaningForm" enctype="multipart/form-data">
-        <label for="csvFile">Upload CSV File:</label>
-        <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br>
-
-        <div id="rulesContainer">
-            <!-- Dynamic rule elements will be added here -->
-        </div>
-
+        <div id="rulesContainer"></div>
         <button type="button" onclick="addRule()">Add Rule</button>
         <button type="button" onclick="deleteRule()">Delete Last Rule</button><br>
 
@@ -24,10 +17,10 @@
         <textarea id="cleaningRules" name="cleaningRules" readonly></textarea>
 
         <input type="submit" value="Generate JSON Rules">
-
-        <div id="jsonContainer"></div>
     </form>
-
-    <script src="static/script.js"></script>
+    <div id="jsonContainer"></div>
+    <button id="submitButton">Submit</button>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="jsonify.js"></script>
 </body>
 </html>

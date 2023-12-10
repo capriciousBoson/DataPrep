@@ -2,8 +2,8 @@ const processFile = require("../middleware/upload");
 const { format } = require("util");
 const { Storage } = require("@google-cloud/storage");
 
-const storage = new Storage({ keyFilename: "keys/google-cloud-key.json" });
-const bucket = storage.bucket("data-prep-bucket");
+const storage = new Storage({ keyFilename: "../dataprepBackend/keys.json" });
+const bucket = storage.bucket("inclasslab3");
 
 const upload = async (req, res) => {
   try {
@@ -13,14 +13,11 @@ const upload = async (req, res) => {
       return res.status(400).send({ message: "Please upload a file!" });
     }
     const userID = req.body.userID;
-    const projectID = req.body.projectID;
     const fileName = req.file.originalname;
-    // const fileInFolder = '${folderName}/${req.file.originalname}';
-    // const folderPath = `${userID}/${projectID}`;
-    // const fileInFolder = `${folderPath}/${fileName}`;
+    
     const fileInFolder = `Raw-Data/${userID}/${fileName}`
     console.log("User ID:", userID); // Log the userID value
-    console.log("Project ID:", projectID); 
+
 
     // try {
     //   await bucket.file(folderPath).save(); // Trailing slash creates a folder
@@ -43,7 +40,7 @@ const upload = async (req, res) => {
       );
 
       try {
-        await bucket.file(req.file.originalname).makePublic();
+        await bucket.file(req.file.originalname);
       } catch {
         return res.status(500).send({
           message:
