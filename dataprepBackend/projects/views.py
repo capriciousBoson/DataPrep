@@ -41,7 +41,7 @@ class DataprocJobView(APIView):
             download_url = self.generate_signed_url(bucket_name, output_folder_path, output_file_extension, gcp_service_creds)
             print(download_url)
 
-            return Response({'message': 'Job submitted successfully.'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Job submitted successfully.','download_url':download_url}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f'Error submitting job: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
