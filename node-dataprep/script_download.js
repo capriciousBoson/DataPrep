@@ -1,7 +1,7 @@
 // Function to fetch data from the backend and populate the textfield using Axios
 function fetchDataFromBackend() {
     // Replace 'your_backend_api_url' with the actual API endpoint
-    axios.get('http://34.174.88.226:8000//projects/jobsapi/')
+    axios.get('http://34.174.86.160:8000//projects/jobsapi/')
         .then(response => {
             // Update the value of the dataField input with the fetched data
             document.getElementById("dataField").value = response.data.download_url;

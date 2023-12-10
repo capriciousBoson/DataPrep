@@ -1,26 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles.css" >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+
     <title>DataPrep</title>
-</head>
-<body>
-    <h1>DataPrep</h1>
-    <input type="file" id="fileInput">
-    <input type="text" id="userID" placeholder="Enter User ID">
-    <h4>Define required configurations</h1>
-    <form id="cleaningForm" enctype="multipart/form-data">
-        <div id="rulesContainer"></div>
-        <button type="button" id="addRule">Add Rule</button>
-        <button type="button" id="deleteRule">Delete Last Rule</button><br>
-        <label for="cleaningRules">Generated JSON Rules:</label>
-        <textarea id="cleaningRules" name="cleaningRules" readonly></textarea>
-        <input type="submit" value="Generate JSON Rules">
-    </form>
-    <div id="jsonContainer"></div>
-    <button id="uploadButton">Upload</button>
+  </head>
+  <body>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="loader" id="loader"></div>
+    <div class="container" id="container">
+      <h1>DataPrep</h1>
+      <div class="form-group">
+        <label><b>Step 1-</b> Select CSV File:</label>
+        <input type="file" class="form-control" id="fileInput" accept=".csv" />
+      </div>
+      <div class="form-group">
+        <label for="userID">Enter Job ID:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="userID"
+          placeholder="Enter Job ID"
+        />
+      </div>
+      <button class="btn" id="uploadButton">Upload</button>
+
+      <div class="mt-4">
+        <label><b>Step 2-</b> Define Configurations:</label>
+        <form id="cleaningForm" enctype="multipart/form-data">
+          <div id="rulesContainer"></div>
+          <button type="button" class="btn" id="addRule">Add Rule</button>
+          <button type="button" class="btn" id="deleteRule">
+            Delete Last Rule</button
+          ><br />
+          <label for="cleaningRules"><b>Step 3-</b>Start Processing</label>
+          <button type="submit" class="btn">Process Data</button>
+        </form>
+      </div>
+
+      <div id="jsonContainer"></div>
+
+      <div class="copyAndDownload">
+        <label for="dataField" class="copyLabel">Link:</label>
+        <input type="text" class="form-control" id="dataField" readonly />
+        <button class="btn-info" id="copytoClip" onclick="copyToClipboard()">
+          <span class="material-icons"> content_copy </span>
+        </button>
+      </div>
+      <button class="btn" id="copytoClip" onclick="downloadFromLink()">
+        Download
+      </button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="main.js"></script>
-</body>
+  </body>
 </html>

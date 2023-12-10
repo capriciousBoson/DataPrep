@@ -1,106 +1,231 @@
+:root {
+  --color: #4973ff;
+}
 /* Apply some basic styling to the body */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
-/* Style the input elements */
+body {
+  margin: 0;
+  padding: 20px; /* Added padding */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #f0f0f0;
+  font-size: 20px;
+  
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Place the pseudo-element below the content */
+  background-image: url('BKG.png');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px); /* Adjust the blur intensity */
+}
+
+ /* Place the content above the blurred background */
+
+
+label {
+  display: flex;
+  width: 50%;
+}
 input {
-    margin: 5px;
-    padding: 8px;
-}
-
-/* Style the buttons */
-button {
-    padding: 10px 20px;
-    margin: 5px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Give a different style to the upload button */
-#uploadButton {
-    background-color: #2ecc71;
-}
-
-/* Center the buttons */
-#selectFileButton,
-#uploadButton {
-    display: flexbox;
-    margin: 0 auto;
-}
-
-/* makejson css code */
-
-/* Reset some default styles */
-body, h1, form {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+  margin: 5px;
+  padding: 8px;
 }
 
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
+  position: relative; 
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #d7e3fc;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+
+/* Style the buttons */
+button,
+.btn {
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #6e78ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
 }
 
 h1 {
-    color: #333;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px; /* Added margin-bottom */
+}
+
+
+/* Style the input elements */
+
+#dataField {
+  margin: 5px;
+  padding: 8px;
+  width: 100vh;
+  margin-right: 10px; /* Added margin-right */
+}
+
+/* Reset some default styles */
+body,
+h1,
+form {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #abc4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-}
-
-button {
-    margin: 5px 0;
-    padding: 8px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 textarea {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 10px;
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
 }
 
 input[type="submit"] {
-    background-color: #28a745;
+  background-color: #6e78ff;
 }
 
 #jsonContainer {
-    margin-top: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px; /* Added margin-bottom */
 }
 
-#submitButton {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+.copyLabel {
+  margin-top: 0.5rem;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+}
+.flex-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to the next line if there's not enough space */
+}
+.rule-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Adjust as needed */
+}
+.rule-label {
+  margin-right: 10px; 
+  margin-left: 10px;/* Adjust as needed for spacing between label and select */
 }
 
-#submitButton:hover {
-    background-color: #c82333;
+.rule-select {
+  width: 150px; /* Adjust as needed */
+}
+
+.flex-item {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.copyAndDownload {
+  --height: 36px;
+  display: flex;
+  max-width: 600vh;
+}
+
+.form-control {
+  flex-grow: 1;
+  padding: 4px 4px 4px 4px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-right: none;
+  margin: 5px;
+  outline: none;
+}
+
+.form-control:hover {
+  background: #eeeeee;
+}
+
+/* copy link button css */
+.btn-info {
+  background-color: #dddddd;
+  color: #333;
+  flex-shrink: 0;
+  width: var(--height);
+  height: var(--height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  border: 1px solid #cccccc;
+  cursor: pointer;
+}
+
+.btn-info:hover {
+  background-color: #cccccc;
+}
+
+/* Loader CSS */
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #6E78FF;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -40px;
+  display: none; /* Initially hide the loader */
+  z-index: 5000;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Adjust the opacity for the blur effect */
+  filter: blur(10px); /* Adjust the blur amount */
+  z-index: 2000; /* Ensure the overlay is on top of other elements */
+  display: none; /* Initially hide the overlay */
+}
+
+.content {
+  position: relative;
+  z-index: 2000; /* Ensure content is on top of the overlay and loader */
 }
