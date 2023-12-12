@@ -37,7 +37,7 @@ body::before {
 
 label {
   display: flex;
-  width: 50%;
+  /* width: 50%; */
 }
 input {
   margin: 5px;
@@ -189,6 +189,11 @@ input[type="submit"] {
 .btn-info:hover {
   background-color: #cccccc;
 }
+
+.btn-info:active {
+  background-color: #6e78ff;
+}
+
 
 /* Loader CSS */
 

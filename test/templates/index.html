@@ -1,33 +1,62 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Cleaning Web App</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>DataPrep</title>
 </head>
 <body>
-    <h1>Data Cleaning Web App</h1>
-    <form id="cleaningForm" enctype="multipart/form-data">
-        <label for="csvFile">Upload CSV File:</label>
-        <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br>
-
-        <div id="rulesContainer">
-            <!-- Dynamic rule elements will be added here -->
-        </div>
-
-        <button type="button" onclick="addRule()">Add Rule</button>
-        <button type="button" onclick="deleteRule()">Delete Last Rule</button><br>
-
-        <label for="cleaningRules">Generated JSON Rules:</label>
-        <textarea id="cleaningRules" name="cleaningRules" readonly></textarea>
-
-        <input type="submit" value="Generate JSON Rules">
-
-        <div id="jsonContainer"></div>
+    <h1>DataPrep</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="fileInput">
+        <input type="text" id="userID" placeholder="Enter User ID">
+        <button type="button" id="uploadButton">Upload</button>
     </form>
 
-    <script src="static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+       document.getElementById('uploadButton').addEventListener('click', async () => {
+    const fileInput = document.getElementById('fileInput');
+    const userID = document.getElementById('userID').value;
+
+    if (!fileInput.files.length) {
+        alert('Please choose a file to upload.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('fileInput', file);
+    formData.append('userID', userID);
+
+    try {
+        const response = await axios.post('http://your-flask-server/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        // Handle the response as needed
+        console.log(response.data.message);
+    } catch (error) {
+        // Handle errors
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Server responded with error status:', error.response.status);
+            console.error('Error response data:', error.response.data);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error setting up the request:', error.message);
+        }
+    }
+});
+
+    </script>
 </body>
 </html>

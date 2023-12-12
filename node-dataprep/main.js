@@ -8,16 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedFile = null; // contains our complete file
     let jsonSelectedFile = null; // contains the json file
     let filename = null; // contains the filename without extension
-    const header = ["", "auto"]; // contains the header of the csv file
+    const header = ["auto"]; // contains the header of the csv file
 
     // prod IP
     // whenever IP changed, update both prod_ip and backend 
-    const prod_ip = 'http://34.174.108.150:5000';
+    const prod_ip = 'http://34.174.91.237:5000';
     const test_ip = 'http://localhost:5000';
-    const backend = 'http://34.174.108.150:8000'
+    const backend = 'http://34.174.91.237:8000'
 
 
-    const sparkOperations = ['', 'auto', 'filter', 'withColumn', 'drop', 'groupBy', 'agg', 'orderBy', 'mean_normalization', 'categorial_encoding', 'fillna', 'cast'];
+    const sparkOperations = ['auto', 'mean_normalization', 'log_transformation', 'categorical_encoding', 'detect_outliers' , 'drop'];
 
     fileInput.addEventListener('change', (event) => {
 
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Read the header when a file is selected
         // if (selectedFile) {
-
         if (selectedFile.name.endsWith('.csv')) {
             // Valid CSV file, you can proceed with further processing
             // alert('File is a valid CSV file. You can proceed with processing.');
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Assuming the header is in the first line of the CSV
                 const firstLine = content.split('\n')[0];
-                header.splice(2, header.length, ...firstLine.split(','));
+                header.splice(1, header.length, ...firstLine.split(','));
 
                 // Log or use the header array as needed
                 console.log('CSV Header:', header);
@@ -61,9 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     uploadButton.addEventListener('click', async () => {
+
+        console.log("bye", userID.value);
         showLoader();
 
-        if (selectedFile) {
+        if (selectedFile && userID.value !== "") {
             const formData = new FormData();
             formData.append('file', selectedFile);
             formData.append('userID', userID.value);
@@ -95,11 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } else {
-            console.error('No file selected');
-            alert("No file selected");
+            console.error('No file selected or No Job ID entered');
+            alert("No file selected or No Job ID entered");
         }
         hideLoader();
-        
+
     });
 
     let ruleCount = 0;
@@ -161,6 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const cleaningRulesJSON = JSON.stringify(rules, null, 2);
+
+        if (cleaningRulesJSON == "[]") {
+            alert("Please add atleast one rule");
+            return;
+        }
         console.log('Generated Cleaning Rules:', cleaningRulesJSON);
 
         // Display the generated JSON on the web page
@@ -192,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 console.log('Json File uploaded successfully:', response.data);
-                alert("Processing File...");
+                // alert("Processing File...");
 
             } catch (error) {
                 if (error.response && error.response.status === 500) {
@@ -239,11 +245,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error:', error);
+            hideLoader();
+            alert("An error has occured to process your request. Please Retry!");
 
             if (error.response && error.response.status === 500) {
                 console.log('No response');
+                hideLoader();
             } else {
                 console.log('Error occurred');
+                hideLoader();
             }
         }
     });
@@ -269,17 +279,40 @@ function copyToClipboard() {
 
     // Copy the selected text to clipboard
     if (dataField.value !== "") {
-        navigator.clipboard.writeText(dataField.value)
-            .then(() => {
-                // Alert the user that the link is copied
-                alert("Link copied to clipboard: " + dataField.value);
-            })
-            .catch(error => {
-                console.log('Error copying to clipboard:', error);
-            });
+        var textArea = document.createElement("textarea");
+        textArea.value = dataField.value;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            alert("Link copied to clipboard: " + dataField.value);
+        } catch (err) {
+            alert("Link copied to clipboard: " + text);
+            console.log('Fallback: Oops, unable to copy', err);
+        } finally {
+            document.body.removeChild(textArea);
+        }
+
     }
     else {
         console.log("nothing to copy")
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        alert("Link copied to clipboard: " + text);
+    } catch (err) {
+        console.log('Fallback: Oops, unable to copy', err);
+    } finally {
+        document.body.removeChild(textArea);
     }
 }
 
@@ -288,7 +321,7 @@ function copyToClipboard() {
 function showLoader() {
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('loader').style.display = 'block';
-  
+
     // Disable all interactive elements
     disableInteractiveElements();
 }
@@ -296,7 +329,7 @@ function showLoader() {
 function hideLoader() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('loader').style.display = 'none';
-  
+
     // Enable all interactive elements
     enableInteractiveElements();
 }

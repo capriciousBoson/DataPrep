@@ -4,20 +4,16 @@ Welcome to the project! To get started, follow these steps to set up your develo
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/your-repository.git](https://github.com/capriciousBoson/DataPrep.git)
-   cd DataPrep
+   git clone https://github.com/your-username/your-repository.git
+   cd your-repository
 Set Up keys.json
-Create a service account and make sure the service account has access to Dataproc and storage, and download keys for the service account.
 Place your keys.json file in the dataprepBackend folder. This file contains sensitive information, so it should be kept secure and not shared publicly.
-  Note: Ensure that this file is included in your .gitignore to avoid unintentionally committing it to the repository.
-Or Add it as a secret in the GCP account to keep the key file secure.
 
-
+Note: Ensure that this file is included in your .gitignore to avoid unintentionally committing it to the repository.
 
 /your-repository
   /dataprepBackend
     - keys.json
-    
 Configure config.py
 Copy the config_template.py file in the dataprepBackend folder to a new file named config.py.
 
@@ -43,10 +39,10 @@ Ensure that your keys.json file and any sensitive configuration files are ignore
 /dataprepBackend/config.py
 Create Docker Container
 
-docker build -t dataprep .
+docker build -t container-name .
 Run the Application
 
-docker run -it -p 8000:8000 dataprep
+docker run -it -p 8000:8000 container-name
 Open your browser and navigate to http://localhost:8000 to view the application.
 
 Additional Notes

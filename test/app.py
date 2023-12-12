@@ -1,31 +1,50 @@
-# app.py
-import json
 from flask import Flask, render_template, request, jsonify
+from google.cloud import storage
+import os
 
 app = Flask(__name__)
+
+# Replace with your GCS bucket name and path
+GCS_BUCKET_NAME = 'your-gcs-bucket'
+GCS_PATH = 'uploads/'
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/process', methods=['POST'])
-def process():
-    cleaning_rules = json.loads(request.form['cleaningRules'])  # Parse JSON
-    uploaded_file = request.files['csvFile']
+@app.route('/upload', methods=['POST'])
+def upload():
+    try:
+        # Get the uploaded file and user ID
+        file = request.files['fileInput']
+        user_id = request.form['userID']
 
-    # Save the uploaded CSV file to the server
-    if uploaded_file:
-        uploaded_file.save(f"uploads/{uploaded_file.filename}")
+        if not file:
+            return jsonify({'error': 'No file provided'})
 
-    # Process cleaning_rules and uploaded_file as needed
+        # Save the file to a temporary location
+        temp_file_path = '/tmp/{}'.format(file.filename)
+        file.save(temp_file_path)
 
-    # Save the generated JSON to a file in the root directory
-    with open('generated_rules.json', 'w') as json_file:
-        json.dump(cleaning_rules, json_file, indent=2)
+        # Generate a unique filename based on user ID and the original filename
+        unique_filename = f'{user_id}_{file.filename}'
 
-    # Sample response
-    response_data = {'status': 'success', 'message': 'Processing complete.'}
-    return jsonify(response_data)
+        # Upload the file to GCS
+        upload_to_gcs(temp_file_path, GCS_PATH + unique_filename)
+
+        return jsonify({'message': 'Upload successful'})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+def upload_to_gcs(local_path, gcs_path):
+    client = storage.Client()
+    bucket = client.bucket(GCS_BUCKET_NAME)
+    blob = bucket.blob(gcs_path)
+    blob.upload_from_filename(local_path)
+
+    # Delete the temporary local file
+    os.remove(local_path)
 
 if __name__ == '__main__':
     app.run(debug=True)

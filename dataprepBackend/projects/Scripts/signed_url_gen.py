@@ -20,7 +20,7 @@ def generate_signed_url(bucket_name, folder_name, file_extension, key_file_path,
     # Assuming the first matching blob is the desired file
     blob = matching_blobs[0]
 
-    # Generate the expiration time for the signed URL
+    # Generate the expiration time for the signed URL default is 5 minutes
     expiration_time = datetime.utcnow() + timedelta(minutes=expiration_time_minutes)
 
     # Generate the signed URL
@@ -32,7 +32,7 @@ def generate_signed_url(bucket_name, folder_name, file_extension, key_file_path,
 
     return signed_url
 
-# Example usage:
+# Example usage test data config:
 bucket_name = "dataprep-bucket-001"
 folder_name = "Processed-Data/ash101/subset_dataset_processed_data"
 file_extension = 'csv'

@@ -5,30 +5,31 @@ from google.cloud import dataproc_v1 as dataproc
 from google.cloud import storage
 import re
 from datetime import datetime, timedelta
-from django.http import JsonResponse
-
-
+import sys
+import pyshorteners
+print(sys.path)
+from param import PROJECT_ID, JOB_NAME, TEMP_DIR, STAGING_LOCATION, REGION,SERVICE_ACCOUNT_EMAIL, KEY_FILE, input_files,JOB_FILE_PATH,CLUSTER_NAME,BUCKET_NAME
 
 class DataprocJobView(APIView):
     def post(self, request, *args, **kwargs):
 
-        project_id = 'dataprep-01-403222'
-        region = 'us-central1'
-        cluster_name = 'dataprep-cluster-1'
+        project_id =PROJECT_ID
+        region = REGION
+        cluster_name = CLUSTER_NAME
 
         username = request.data.get('username')
         dataset_name = request.data.get("dataset_name")
 
-        job_file_path = 'gs://dataprep-jobs/Dataproc-Jobs/dataProcJob.py'
+        job_file_path = JOB_FILE_PATH
 
-        bucket_name = "dataprep-bucket-001"
+        bucket_name = BUCKET_NAME
         output_logs_blob_name = f"Processed-Data/logs/{username}_{dataset_name}_logs"
 
         input_gcs_path = f'gs://{bucket_name}/Raw-Data/{username}/{dataset_name}.csv'
         output_folder_path = f"Processed-Data/{username}/{dataset_name}_processed_data"
         output_file_extension='csv'
 
-        gcp_service_creds = 'confidential/dataprep-01-403222-5bedab8357fa.json'
+        gcp_service_creds = KEY_FILE
         
 
 
@@ -41,7 +42,7 @@ class DataprocJobView(APIView):
             download_url = self.generate_signed_url(bucket_name, output_folder_path, output_file_extension, gcp_service_creds)
             print(download_url)
 
-            return Response({'message': 'Job submitted successfully.', 'download_url': download_url}, status=status.HTTP_200_OK)
+            return Response({'message': 'Job submitted successfully.','download_url':download_url}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f'Error submitting job: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -62,6 +63,7 @@ class DataprocJobView(APIView):
             request={"project_id": project_id, "region": region, "job": job}
         )
         response = operation.result()
+        print("job creation \n",response)
 
         matches = re.match("gs://(.*?)/(.*)", response.driver_output_resource_uri)
         output_bytes = storage.Client().get_bucket(matches.group(1)).blob(f"{matches.group(2)}.000000000").download_as_bytes()
@@ -98,7 +100,13 @@ class DataprocJobView(APIView):
             expiration=expiration_time,
             method='GET',
         )
-        return signed_url
+        
+        long_url =signed_url
+        type_tiny = pyshorteners.Shortener()
+        short_url = type_tiny.tinyurl.short(long_url)
+        print("The Shortened URL is:",short_url)
+
+        return short_url
 
 
     

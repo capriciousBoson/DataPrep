@@ -12,6 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . code
 WORKDIR /code
 
+ENV GOOGLE_APPLICATION_CREDENTIALS="./dataprepBackend/keys.json"
+
 EXPOSE 8000
 
 # runs the production server
